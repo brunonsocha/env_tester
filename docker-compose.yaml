@@ -5,9 +5,18 @@ services:
       dockerfile: Dockerfile.demo
     environment:
       - NODE_ID=1
-      - tested=true
+    restart: always
+    labels:
+      tested: "true"
     ports:
       - "8081:8080"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+      start_interval: 5s
 
   node-2:
     build:
@@ -15,7 +24,9 @@ services:
       dockerfile: Dockerfile.demo
     environment:
       - NODE_ID=2
-      - tested=true
+    restart: always
+    labels:
+      tested: "true"
     ports:
       - "8082:8080"
 
@@ -25,6 +36,8 @@ services:
       dockerfile: Dockerfile.demo
     environment:
       - NODE_ID=3
-      - tested=true
+    restart: always
+    labels:
+      tested: "true"
     ports:
       - "8083:8080"
