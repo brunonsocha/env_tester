@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/csv"
 	"fmt"
 	"io"
 	"log"
@@ -14,6 +15,10 @@ import (
 	"github.com/docker/docker/client"
 	"github.com/goccy/go-yaml"
 )
+
+// this is pretty messy, will have to refactor
+// 1. make csv processing, recovery failure row handling, etc. their own functions outside of main
+// 2. create an infoLog and errorLog
 
 var data = [][]string{{"Iteration", "Timestamp", "Container ID", "Container Name", "Recovery Time", "State"}}
 
@@ -179,6 +184,22 @@ func main() {
 		avgTime = totalTime / time.Duration(success)
 	}
 	log.Printf("[Info] Finished testing after %d kills.\n[STATS]\nSuccess: %d/%d\nAverage time: %v\nMax time: %v\nKill method: %s", cfg.Kills.Max_iterations, success, cfg.Kills.Max_iterations, avgTime, maxTime, cfg.Kills.Signal)
+	log.Print("[Info] Exporting data to a CSV file...")
+
+	outputDir := os.Getenv("OUTPUT_DIR")
+	if outputDir == "" {
+		outputDir = "."
+	}
+	outputPath := fmt.Sprintf("%s/env_test_data.csv", outputDir)
+	f, err = os.Create(outputPath)
+	if err != nil {
+		log.Printf("[Error] Couldn't create the file.")
+	}
+	defer f.Close()
+	w := csv.NewWriter(f)
+	defer w.Flush()
+	w.WriteAll(data)
+	log.Printf("[Info] File exported as env_test_data.csv")
 }
 
 func loadCfg(f io.Reader) (*Config, error) {
@@ -189,3 +210,4 @@ func loadCfg(f io.Reader) (*Config, error) {
 	}
 	return &cfg, nil
 }
+

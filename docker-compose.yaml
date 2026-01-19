@@ -8,9 +8,10 @@ services:
       controller: "true"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./config.yaml:/config/config.yaml:ro
+      - .:/config
     environment:
       CONFIG_PATH: /config/config.yaml
+      OUTPUT_DIR: /config
     depends_on:
       - node-1
       - node-2
