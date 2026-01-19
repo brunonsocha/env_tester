@@ -63,6 +63,12 @@ docker compose up
 
 The behavior will be the same as in the demo - you'll see the containers being killed and restarted, and at the end, you'll receive a summary of all the iterations, and an exported .csv file with details.
 
+### Clean up
+Run:
+```bash
+docker compose down
+```
+
 ## How it works
 1. The tool mounts */var/run/docker.sock* to check the container list.
 2. The tool selects containers marked with the chosen label.
