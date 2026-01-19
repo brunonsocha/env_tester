@@ -50,7 +50,7 @@ func main() {
 	log.Printf("[Info] Config loaded.")
 	apiClient, err := client.NewClientWithOpts(client.FromEnv)
 	if err != nil {
-		panic(err)
+		log.Fatalf("[Error] Couldn't connect to Docker.")
 	}
 	defer apiClient.Close()
 	filter := filters.NewArgs()
@@ -60,16 +60,24 @@ func main() {
 	success := 0
 	totalTime := time.Duration(0)
 	maxTime := time.Duration(0)
+	for {
+		containers, err := apiClient.ContainerList(context.Background(), container.ListOptions{All: false, Filters: filter})
+		if err != nil {
+			log.Printf("[Error] %v", err)
+			continue
+		}
+		if len(containers) > 0 {
+			break
+		}
+		log.Printf("[Info] Waiting for targets...")
+		time.Sleep(2*time.Second)
+	}
 	Outer:
 	for i := 0; i < cfg.Kills.Max_iterations; i++ {
 		time.Sleep(time.Second * time.Duration(cfg.Kills.Kill_interval))
 		containers, err := apiClient.ContainerList(context.Background(), container.ListOptions{All: false, Filters: filter})
 		if err != nil {
 			log.Printf("[Error] %v", err)
-			continue
-		}
-		if len(containers) == 0 {
-			log.Printf("[Info] No containers up.")
 			continue
 		}
 		ctr := containers[seed.Intn(len(containers))]

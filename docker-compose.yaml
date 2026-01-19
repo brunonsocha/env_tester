@@ -12,10 +12,6 @@ services:
     environment:
       CONFIG_PATH: /config/config.yaml
       OUTPUT_DIR: /config
-    depends_on:
-      - node-1
-      - node-2
-      - node-3
 
 
   node-1:
