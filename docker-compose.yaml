@@ -19,6 +19,7 @@ services:
 
 
   node-1:
+    profiles: ["demo"]
     init: true
     build:
       context: .
@@ -39,6 +40,7 @@ services:
       start_period: 5s
 
   node-2:
+    profiles: ["demo"]
     init: true
     build:
       context: .
@@ -59,6 +61,7 @@ services:
 
 
   node-3:
+    profiles: ["demo"]
     init: true
     build:
       context: .
