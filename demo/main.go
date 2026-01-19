@@ -29,7 +29,6 @@ func main() {
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprintf(w, containerId)
 	})
-	log.Printf("[Container %s] Starting the server on port :8080", containerId)
 	http.ListenAndServe(":8080", mux)
 
 }
