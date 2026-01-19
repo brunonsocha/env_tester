@@ -20,6 +20,7 @@ func main() {
 
 	filter := filters.NewArgs()
 	filter.Add("label", "tested=true")
+	filter.Add("health", "healthy")
 	for {
 		time.Sleep(time.Second * 5)
 		containers, err := apiClient.ContainerList(context.Background(), container.ListOptions{All: false, Filters: filter})
@@ -32,8 +33,20 @@ func main() {
 			continue
 		}
 		ctr := containers[rand.Intn(len(containers))]
-		if err = apiClient.ContainerKill(context.Background(), ctr.ID, "SIGKILL"); err != nil {
-			log.Printf("Couldn't kill the container %v", ctr)
+		exec := container.ExecOptions{
+			Cmd: []string{"kill", "1"},
+			AttachStdout: false,
+			AttachStderr: false,
 		}
+		resp, err := apiClient.ContainerExecCreate(context.Background(), ctr.ID, exec)
+		if err != nil {
+			log.Printf("[Error] %v", err)
+			continue
+		}
+		if err = apiClient.ContainerExecStart(context.Background(), resp.ID, container.ExecStartOptions{}); err != nil {
+			log.Printf("[Error] %v", err)
+			continue
+		}
+		log.Printf("[Info] Killed the container %s", ctr.Names[0])
 	}
 }
