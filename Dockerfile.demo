@@ -1,0 +1,14 @@
+FROM golang:1.25-alpine AS builder
+WORKDIR /app
+
+COPY . .
+
+RUN CGO_ENABLED=0 go build -o demo-server ./demo
+
+FROM alpine:latest
+
+WORKDIR /root/
+
+COPY --from=builder /app/demo-server .
+
+CMD ["./demo-server"]
