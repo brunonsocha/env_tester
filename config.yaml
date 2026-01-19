@@ -1,0 +1,7 @@
+kills:
+  target_label: "tested=true"
+  kill_interval: 5
+  max_iterations: 10
+  death_timeout: 10
+  recovery_timeout: 50
+  signal: "SIGKILL" # or SIGSEGV, SIGTERM

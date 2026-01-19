@@ -8,6 +8,9 @@ services:
       controller: "true"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - ./config.yaml:/config/config.yaml:ro
+    environment:
+      CONFIG_PATH: /config/config.yaml
     depends_on:
       - node-1
       - node-2
@@ -15,6 +18,7 @@ services:
 
 
   node-1:
+    init: true
     build:
       context: .
       dockerfile: Dockerfile.demo
@@ -34,6 +38,7 @@ services:
       start_period: 5s
 
   node-2:
+    init: true
     build:
       context: .
       dockerfile: Dockerfile.demo
@@ -53,6 +58,7 @@ services:
 
 
   node-3:
+    init: true
     build:
       context: .
       dockerfile: Dockerfile.demo
