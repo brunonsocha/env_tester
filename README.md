@@ -31,7 +31,7 @@ When the tool finishes its work, it outputs stats in the terminal and exports te
    Kill method: SIGKILL
    ```
 
-4. **Get the report**
+4. **Get the report**  
    The exact report of what happened on each iteration to which container will be saved to the current directory, in the *env_test_data.csv* file.
 
 ### Set it up
